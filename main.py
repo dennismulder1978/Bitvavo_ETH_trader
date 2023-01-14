@@ -7,7 +7,7 @@ balance_EURO = get_balance('EUR')
 price_coin = get_price(coin)
 threshold = 4
 # MA's
-ma_a, ma_b = moving_averages(coin, 2, 5, '5m')
+ma_a, ma_b = moving_averages(symbol=coin, a=2, b=5, time_type='5m')
 
 
 print(f'Balance COIN {coin}: {balance_coin}')
