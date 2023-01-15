@@ -2,7 +2,6 @@ from Secret import const
 from python_bitvavo_api.bitvavo import Bitvavo
 import datetime
 import os.path
-from os import path
 
 bitvavo = Bitvavo({
     'APIKEY': const.api_key,
