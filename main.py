@@ -26,5 +26,5 @@ elif (delta_ma < -4) & (balance_coin > 0.001):
     print(trade_market_order(coin, 'sell', balance_coin))
     print('SELL')
 else:
-    log(f'Do nothing,{coin}-EUR,{round((ma_b - ma_a), 1)},none', 'log')
+    log(f'Do nothing,{coin}-EUR,{round(delta_ma, 1)},none', 'log')
     print('Do nothing')
