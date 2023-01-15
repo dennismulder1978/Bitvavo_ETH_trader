@@ -22,7 +22,7 @@ if (delta_ma > 4) & (balance_EURO > 10):
     print(trade_market_order(coin, 'buy', round(0.99 * (balance_EURO / price_coin), 2)))
     print('BUY')
 
-elif (delta_ma < -4) & (balance_coin > 0.001):
+elif (delta_ma < -4) & (balance_coin > 0.0001):
     print(trade_market_order(coin, 'sell', balance_coin))
     print('SELL')
 else:
