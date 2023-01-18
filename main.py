@@ -2,8 +2,8 @@ from func import *
 
 coin = 'ETH'
 # balances, prices and MA's
-balance_coin = get_balance(coin)
-balance_EURO = get_balance('EUR')
+balance_coin = get_balance(symbol=coin)
+balance_EURO = get_balance(symbol='EUR')
 price_coin = get_price(coin)
 threshold = 4
 ma_a, ma_b = moving_averages(symbol=coin, a=2, b=5, time_type='5m')
