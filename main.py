@@ -4,7 +4,7 @@ coin = 'ETH'
 # balances, prices and MA's
 balance_coin = get_balance(symbol=coin)
 balance_EURO = get_balance(symbol='EUR')
-price_coin = get_price(coin)
+price_coin = get_price(symbol=coin)
 threshold = 4
 ma_a, ma_b = moving_averages(symbol=coin, a=2, b=5, time_type='5m')
 delta_ma = round((ma_b - ma_a), 1)
