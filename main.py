@@ -11,10 +11,11 @@ delta_ma = round((ma_b - ma_a), 1)
 
 print(f'Balance COIN {coin}: {balance_coin}')
 print(f'Balance EURO: {balance_EURO}')
+print(f'Price COIN: {price_coin}')
 print(f'MA_a: {ma_a}')
 print(f'MA_b: {ma_b}')
 print(f'delta MA: {delta_ma}')
-print(f'Price COIN: {price_coin}')
+
 
 
 # LOG items: Action, Pair, Amount, Error, datetime
