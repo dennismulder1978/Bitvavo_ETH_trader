@@ -20,11 +20,8 @@ print(f'Price COIN: {price_coin}')
 # LOG items: Action, Pair, Amount, Error, datetime
 if (delta_ma > threshold) & (balance_EURO > 10):
     print(trade_market_order(symbol=coin, action='buy', amount=balance_EURO))
-    print('BUY')
-
 elif (delta_ma < 0-threshold) & (balance_coin > 0.01):
     print(trade_market_order(symbol=coin, action='sell', amount=balance_coin))
-    print('SELL')
 else:
     log(f'Do nothing,{coin}-EUR,{round(delta_ma, 1)},none', 'log')
     print('Do nothing')
