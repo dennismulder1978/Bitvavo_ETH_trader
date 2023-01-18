@@ -40,8 +40,8 @@ def moving_averages(symbol: str, a: int, b: int, time_type: str):
             temp_a += float(resp[i][4])
         for j in range(1, b + 1):
             temp_b += float(resp[j][4])
-        ma_a = temp_a / a
-        ma_b = temp_b / b
+        ma_a = round((temp_a / a), 2)
+        ma_b = round((temp_b / b), 2)
         return ma_a, ma_b
     except Exception as e:
         log(f'Trying to get price,{symbol},0,{e}', 'error')
