@@ -2,7 +2,6 @@ from Secret import const
 from python_bitvavo_api.bitvavo import Bitvavo
 import datetime
 import os.path
-from os import path
 
 bitvavo = Bitvavo({
     'APIKEY': const.api_key,
@@ -49,17 +48,20 @@ def moving_averages(symbol: str, a: int, b: int, time_type: str):
         print(e)
 
 
-def trade_market_order(symbol: str, action: str, amount):
+def trade_market_order(symbol: str, action: str, amount: int):
     pair = str.upper(symbol) + '-EUR'
     try:
-        bitvavo.placeOrder(pair, action, 'market', {'amount': amount})
+        if action.lower() == 'buy':
+            bitvavo.placeOrder(pair, action, 'market', {'amountQuote': amount})
+        else:
+            bitvavo.placeOrder(pair, action, 'market', {'amount': amount})
         log(f'{action},{pair},{amount},none', 'log')
         log(f'{action},{pair},{amount},none', 'action')
-        return f'{action}, {pair}, {action}, {amount}, {datetime.datetime.now()}'
+        return f'{action}, {pair}, {amount}, {datetime.datetime.now()}'
     except Exception as e:
         log(f'{action},{pair},{amount},{e}', 'log')
         log(f'{action},{pair},{amount},{e}', 'error')
-        return f'{e}, {action}, {pair}, {action}, {amount}, {datetime.datetime.now()}'
+        return f'{e}, {action}, {pair}, {amount}, {datetime.datetime.now()}'
 
 
 def log(stringer: str, name: str):

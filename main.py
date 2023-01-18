@@ -19,12 +19,12 @@ print(f'Price COIN: {price_coin}')
 
 
 # LOG items: Action, Pair, Amount, Error, datetime
-if ((ma_b - ma_a) > 4) & (balance_EURO > 10):
-    print(trade_market_order(coin, 'buy', round(0.99 * (balance_EURO / price_coin), 4)))
+if ((ma_b - ma_a) > threshold) & (balance_EURO > 10):
+    print(trade_market_order(symbol=coin, action='buy', amount=balance_EURO))
     print('BUY')
 
-elif ((ma_b - ma_a) < -4) & (balance_coin > 1):
-    print(trade_market_order(coin, 'sell', balance_coin))
+elif ((ma_b - ma_a) < 0-threshold) & (balance_coin > 0.01):
+    print(trade_market_order(symbol=coin, action='sell', amount=balance_coin))
     print('SELL')
 else:
     log(f'Do nothing,{coin}-EUR,{round((ma_b - ma_a), 1)},none', 'log')
