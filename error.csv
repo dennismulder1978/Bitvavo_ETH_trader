@@ -1,0 +1,6 @@
+Action,Pair,Amount,Error,DateTime
+Trying to get balance,ETH,0,0,2023-01-18 20:47:17.064822
+Trying to get balance,EUR,0,0,2023-01-18 20:47:17.172872
+Trying to get price,ETH-EUR,0,'price',2023-01-18 20:47:17.776076
+Trying to get price,ETH,0,1,2023-01-18 20:47:17.999852
+buy,ETH-EUR,0.06678788303765515,Bitvavo.placeOrder() missing 1 required positional argument: 'body',2023-01-18 21:06:07.765991
