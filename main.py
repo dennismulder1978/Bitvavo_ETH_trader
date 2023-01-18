@@ -17,7 +17,6 @@ print(f'MA_b: {ma_b}')
 print(f'delta MA: {delta_ma}')
 
 
-
 # LOG items: Action, Pair, Amount, Error, datetime
 if (delta_ma > threshold) & (balance_EURO > 10):
     print(trade_market_order(symbol=coin, action='buy', amount=balance_EURO))
