@@ -9,12 +9,9 @@ threshold = 4
 ma_a, ma_b = moving_averages(symbol=coin, a=2, b=5, time_type='5m')
 delta_ma = round((ma_b - ma_a), 1)
 
-print(f'Balance COIN {coin}: {balance_coin}')
-print(f'Balance EURO: {balance_euro}')
 print(f'Price COIN: {price_coin}')
 print(f'MA_a: {ma_a}')
 print(f'MA_b: {ma_b}')
-print(f'delta MA: {delta_ma}')
 
 
 # LOG items: Action, Pair, Amount, Error, datetime

@@ -2,6 +2,7 @@ from Secret import const
 from python_bitvavo_api.bitvavo import Bitvavo
 import datetime
 import os.path
+import smtplib
 
 bitvavo = Bitvavo({
     'APIKEY': const.api_key1,
@@ -61,7 +62,6 @@ def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_
     pair = str.upper(coin) + '-EUR'
     action = 'Nothing'
     err = 'none'
-
     if (delta_ma > threshold) & (balance_euro > 1):  # buy coins with euros
         action = 'Buy'
         try:
@@ -76,9 +76,12 @@ def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_
         except Exception as error:
             print(error)
             err = error
+    stringer = f'{action} {pair}\n\tBalance EURO: {balance_euro}\n\tBalance {coin}: {balance_coin}\n'
+    stringer += f'\tDelta_ma: {delta_ma}\n\tError: {err}\n\tTime: {datetime.datetime.now()}'
 
+    send_mail(action=action, stringer=stringer)
     log(f'{action},{pair},{balance_euro},{balance_coin},{delta_ma},{err}')
-    return f'{action} {pair}, euro: {balance_euro}, {coin}: {balance_coin}, delta_ma: {delta_ma}, error: {err}, {datetime.datetime.now()} '
+    return stringer
 
 
 def log(stringer: str):
@@ -93,3 +96,24 @@ def log(stringer: str):
         with open(file, 'w') as g:
             g.write('Action,Pair,Balance_euro,Balance_coin,Delta_MA,Error,DateTime\n' + text)
             g.close()
+
+
+def send_mail(action: str, stringer: str):
+    if (action.lower() == 'buy') or (action.lower() == 'sell'):
+        try:
+            my_mail = smtplib.SMTP('smtp.gmail.com', 587)
+            my_mail.ehlo()
+            my_mail.starttls()
+            sender = const.email_sender
+            receivers = [const.email_receiver]
+            my_mail.login(const.email_sender, const.email_sender_password)
+            header = f'subject:Bitvavo trade {action}\n'
+            content = header + stringer
+            my_mail.sendmail(sender, receivers, content)
+            my_mail.close()
+            print("Mail send successfully.")
+
+        except Exception as error:
+            log(f'ERROR EMAIL,{action},NaN,NaN,NaN,{error}')
+            print(f"something went wrong while trying to send the mail: {error}")
+
