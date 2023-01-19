@@ -4,7 +4,7 @@ import datetime
 import os.path
 import smtplib
 
-bitvavo = Bitvavo({
+bitvavo_info = Bitvavo({
     'APIKEY': const.api_key1,
     'APISECRET': const.api_secret1,
     'RESTURL': 'https://api.bitvavo.com/v2',
@@ -25,7 +25,7 @@ bitvavo_action = Bitvavo({
 
 def get_balance(symbol: str):
     try:
-        return float(bitvavo.balance({"symbol": str.upper(symbol)})[0]['available'])
+        return float(bitvavo_info.balance({"symbol": str.upper(symbol)})[0]['available'])
     except Exception as error:
         log(f'ERROR BALANCE,{symbol},NaN,NaN,NaN,{error}')
         print(error)
@@ -34,7 +34,7 @@ def get_balance(symbol: str):
 def get_price(symbol: str):
     try:
         pair = str.upper(symbol) + '-EUR'
-        return float(bitvavo.tickerPrice({"market": pair})['price'])
+        return float(bitvavo_info.tickerPrice({"market": pair})['price'])
     except Exception as error:
         log(f'ERROR PRICE,{pair},NaN,NaN,NaN,{error}')
         print(error)
@@ -43,7 +43,7 @@ def get_price(symbol: str):
 def moving_averages(symbol: str, a: int, b: int, time_type: str):
     pair = str.upper(symbol) + '-EUR'
     try:
-        resp = bitvavo.candles(pair, time_type, {})
+        resp = bitvavo_info.candles(pair, time_type, {})
         temp_a = float(0)
         temp_b = float(0)
         for i in range(1, a + 1):
@@ -76,7 +76,7 @@ def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_
         except Exception as error:
             print(error)
             err = error
-    stringer = f'{action} {pair}\n\tBalance EURO: {balance_euro}\n\tBalance {coin}: {balance_coin}\n'
+    stringer = f'Action: {action} {pair}\n\tBalance EURO: {balance_euro}\n\tBalance {coin}: {balance_coin}\n'
     stringer += f'\tDelta_ma: {delta_ma}\n\tError: {err}\n\tTime: {datetime.datetime.now()}'
 
     send_mail(action=action, stringer=stringer)
