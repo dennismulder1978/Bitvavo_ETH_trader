@@ -3,6 +3,7 @@ from python_bitvavo_api.bitvavo import Bitvavo
 import datetime
 import os.path
 import smtplib
+from email.mime.text import MIMEText
 
 bitvavo_info = Bitvavo({
     'APIKEY': const.api_key1,
@@ -28,6 +29,7 @@ def get_balance(symbol: str):
         return float(bitvavo_info.balance({"symbol": str.upper(symbol)})[0]['available'])
     except Exception as error:
         log(f'ERROR BALANCE,{symbol},NaN,NaN,NaN,{error}')
+        send_mail(action='Error', stringer=f'GET_BALANCE went wrong: {error}')
         print(error)
 
 
@@ -37,6 +39,7 @@ def get_price(symbol: str):
         return float(bitvavo_info.tickerPrice({"market": pair})['price'])
     except Exception as error:
         log(f'ERROR PRICE,{pair},NaN,NaN,NaN,{error}')
+        send_mail(action='Error', stringer=f'GET_PRICE went wrong: {error}')
         print(error)
 
 
@@ -55,8 +58,8 @@ def moving_averages(symbol: str, a: int, b: int, time_type: str):
         return ma_a, ma_b
     except Exception as error:
         log(f'ERROR MA,{pair},NaN,NaN,NaN,{error}')
+        send_mail(action='Error', stringer=f'MOVING_AVERAGE went wrong: {error}')
         print(error)
-
 
 def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_coin: float, threshold: float):
     pair = str.upper(coin) + '-EUR'
@@ -69,6 +72,7 @@ def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_
         except Exception as error:
             print(error)
             err = error
+            send_mail(action='Error', stringer=f'Trade went wrong: {error}')
     elif (delta_ma < 0 - threshold) & (balance_coin > 0.001):  # sell coins for euros
         action = 'Sell'
         try:
@@ -76,7 +80,8 @@ def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_
         except Exception as error:
             print(error)
             err = error
-    stringer = f'Action: {action} {pair}\n\tBalance EURO: {balance_euro}\n\tBalance {coin}: {balance_coin}\n'
+            send_mail(action='Error', stringer=f'Trade went wrong: {error}')
+    stringer = f'\tAction: {action} {pair}\n\tBalance EURO: {balance_euro}\n\tBalance {coin}: {balance_coin}\n'
     stringer += f'\tDelta_ma: {delta_ma}\n\tError: {err}\n\tTime: {datetime.datetime.now()}'
 
     send_mail(action=action, stringer=stringer)
@@ -99,17 +104,18 @@ def log(stringer: str):
 
 
 def send_mail(action: str, stringer: str):
-    if (action.lower() == 'buy') or (action.lower() == 'sell'):
+    if (action.lower() == 'buy') or (action.lower() == 'sell') or (action.lower() == 'error'):
         try:
+            msg = MIMEText(stringer)
+            msg['Subject'] = f'Bitvavo trade {action}'
+            msg['From'] = const.email_sender
+            msg['To'] = const.email_receiver
+
             my_mail = smtplib.SMTP('smtp.gmail.com', 587)
             my_mail.ehlo()
             my_mail.starttls()
-            sender = const.email_sender
-            receivers = [const.email_receiver]
             my_mail.login(const.email_sender, const.email_sender_password)
-            header = f'subject:Bitvavo trade {action}\n'
-            content = header + stringer
-            my_mail.sendmail(sender, receivers, content)
+            my_mail.sendmail(const.email_sender, const.email_receiver, msg.as_string())
             my_mail.close()
             print("Mail send successfully.")
 
