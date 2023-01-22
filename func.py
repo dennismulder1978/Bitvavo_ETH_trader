@@ -4,6 +4,7 @@ import datetime
 import os.path
 import smtplib
 from email.mime.text import MIMEText
+import mysql.connector
 
 bitvavo_info = Bitvavo({
     'APIKEY': const.api_key1,
@@ -22,6 +23,13 @@ bitvavo_action = Bitvavo({
     'ACCESSWINDOW': 10000,
     'DEBUGGING': False
 })
+
+mydb = mysql.connector.connect(
+    host=const.host_mysql,
+    user=const.user_mysql,
+    password=const.password_mysql,
+    db=const.db_mysql
+)
 
 
 def get_balance(symbol: str):
@@ -88,7 +96,33 @@ def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_
 
     send_mail(action=action, stringer=stringer)
     log(f'{action},{pair},{balance_euro},{balance_coin},{delta_ma},{err}')
+    add_mysql_log(action=action,
+                  pair=pair,
+                  balance_coin=balance_coin,
+                  balance_euro=balance_euro,
+                  price_coin=price_coin,
+                  delta_ma=delta_ma,
+                  error=err)
     return stringer
+
+
+def add_mysql_log(action: str, pair: str, balance_euro: float, balance_coin: float,
+                  price_coin: float, delta_ma: float, error: str):
+
+    my_cursor = mydb.cursor()
+
+    sql = f"INSERT INTO log (name, address) VALUES "
+    sql += f"({action},{pair},{balance_euro},{balance_coin},{price_coin},{delta_ma},{error},{datetime.datetime.now()})"
+
+    my_cursor.execute(sql)
+
+    sql = "INSERT INTO log (Action, Pair, Balance_euro, Balance_coin, Price_coin, Delta_ma, Error, Datetime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    val = (action, pair, balance_euro, balance_coin, price_coin, delta_ma, error, datetime.datetime.now())
+    my_cursor.execute(sql, val)
+
+    mydb.commit()
+
+    print(my_cursor.rowcount, "record inserted.")
 
 
 def log(stringer: str):
