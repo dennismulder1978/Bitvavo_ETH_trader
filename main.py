@@ -19,4 +19,5 @@ print(trade_market_order(coin=coin,
                          delta_ma=delta_ma,
                          balance_euro=balance_euro,
                          balance_coin=balance_coin,
+                         price_coin=price_coin,
                          threshold=threshold))

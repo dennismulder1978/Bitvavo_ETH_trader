@@ -61,7 +61,9 @@ def moving_averages(symbol: str, a: int, b: int, time_type: str):
         send_mail(action='Error', stringer=f'MOVING_AVERAGE went wrong: {error}')
         print(error)
 
-def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_coin: float, threshold: float):
+
+def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_coin: float, price_coin: float,
+                       threshold: float,):
     pair = str.upper(coin) + '-EUR'
     action = 'Nothing'
     err = 'none'
@@ -82,7 +84,7 @@ def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_
             err = error
             send_mail(action='Error', stringer=f'Trade went wrong: {error}')
     stringer = f'\tAction: {action} {pair}\n\tBalance EURO: {balance_euro}\n\tBalance {coin}: {balance_coin}\n'
-    stringer += f'\tDelta_ma: {delta_ma}\n\tError: {err}\n\tTime: {datetime.datetime.now()}'
+    stringer += f'\tPrice coin: {price_coin}\n\tDelta_ma: {delta_ma}\n\tError: {err}\n\tTime: {datetime.datetime.now()}'
 
     send_mail(action=action, stringer=stringer)
     log(f'{action},{pair},{balance_euro},{balance_coin},{delta_ma},{err}')
