@@ -4,7 +4,7 @@ import datetime
 import os.path
 import smtplib
 from email.mime.text import MIMEText
-import mysql.connector
+# import mysql.connector
 
 bitvavo_info = Bitvavo({
     'APIKEY': const.api_key1,
@@ -24,12 +24,12 @@ bitvavo_action = Bitvavo({
     'DEBUGGING': False
 })
 
-mydb = mysql.connector.connect(
-    host=const.host_mysql,
-    user=const.user_mysql,
-    password=const.password_mysql,
-    db=const.db_mysql
-)
+# mydb = mysql.connector.connect(
+#     host=const.host_mysql,
+#     user=const.user_mysql,
+#     password=const.password_mysql,
+#     db=const.db_mysql
+# )
 
 
 def get_balance(symbol: str):
@@ -63,7 +63,7 @@ def moving_averages(symbol: str, a: int, b: int, time_type: str):
             temp_b += float(resp[j][4])
         ma_a = round((temp_a / a), 2)
         ma_b = round((temp_b / b), 2)
-        return ma_a, ma_b
+        return round((ma_b - ma_a), 1)
     except Exception as error:
         log(f'ERROR MA,{pair},NaN,NaN,NaN,{error}')
         send_mail(action='Error', stringer=f'MOVING_AVERAGE went wrong: {error}')
@@ -109,20 +109,21 @@ def trade_market_order(coin: str, delta_ma: float, balance_euro: float, balance_
 def add_mysql_log(action: str, pair: str, balance_euro: float, balance_coin: float,
                   price_coin: float, delta_ma: float, error: str):
 
-    my_cursor = mydb.cursor()
-
-    sql = f"INSERT INTO log (name, address) VALUES "
-    sql += f"({action},{pair},{balance_euro},{balance_coin},{price_coin},{delta_ma},{error},{datetime.datetime.now()})"
-
-    my_cursor.execute(sql)
-
-    sql = "INSERT INTO log (Action, Pair, Balance_euro, Balance_coin, Price_coin, Delta_ma, Error, Datetime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    val = (action, pair, balance_euro, balance_coin, price_coin, delta_ma, error, datetime.datetime.now())
-    my_cursor.execute(sql, val)
-
-    mydb.commit()
-
-    print(my_cursor.rowcount, "record inserted.")
+    # my_cursor = mydb.cursor()
+    #
+    # sql = f"INSERT INTO log (name, address) VALUES "
+    # sql += f"({action},{pair},{balance_euro},{balance_coin},{price_coin},{delta_ma},{error},{datetime.datetime.now()})"
+    #
+    # my_cursor.execute(sql)
+    #
+    # sql = "INSERT INTO log (Action, Pair, Balance_euro, Balance_coin, Price_coin, Delta_ma, Error, Datetime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    # val = (action, pair, balance_euro, balance_coin, price_coin, delta_ma, error, datetime.datetime.now())
+    # my_cursor.execute(sql, val)
+    #
+    # mydb.commit()
+    #
+    # print(my_cursor.rowcount, "record inserted.")
+    pass
 
 
 def log(stringer: str):
