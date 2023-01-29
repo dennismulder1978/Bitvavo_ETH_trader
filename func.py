@@ -63,7 +63,7 @@ def moving_averages(symbol: str, a: int, b: int, time_type: str):
             temp_b += float(resp[j][4])
         ma_a = round((temp_a / a), 2)
         ma_b = round((temp_b / b), 2)
-        return round((ma_b - ma_a), 1)
+        return round((ma_a - ma_b), 1)
     except Exception as error:
         log(f'ERROR MA,{pair},NaN,NaN,NaN,{error}')
         send_mail(action='Error', stringer=f'MOVING_AVERAGE went wrong: {error}')
